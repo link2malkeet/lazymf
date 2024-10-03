@@ -1,7 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { sources } = require("webpack");
 const { ModuleFederationPlugin } = require("webpack").container;
-
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 module.exports = {
   entry: "./src/index.js",
   mode: "development",
@@ -41,6 +40,11 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: "server",
+      reportFilename: "report.html",
+      openAnalyzer: true,
     }),
   ],
 };
