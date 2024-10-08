@@ -2,7 +2,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.ts",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   mode: "development",
   devtool: "source-map",
   devServer: {
@@ -17,14 +20,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(ts|tsx)$/, // For all .ts/.tsx files
+        use: "ts-loader",
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
-          },
-        },
       },
     ],
   },

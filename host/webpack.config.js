@@ -4,7 +4,10 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserPlugin = require("terser-webpack-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
-  entry: "./src/index.js",
+  entry: "./src/index.tsx",
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
+  },
   mode: "production",
   devtool: "source-map",
   devServer: {
@@ -33,17 +36,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(ts|tsx)$/, // For all .ts/.tsx files
+        use: "ts-loader",
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [
-              ["@babel/preset-env", { useBuiltIns: "usage", corejs: 3 }],
-              "@babel/preset-react",
-            ],
-          },
-        },
       },
     ],
   },

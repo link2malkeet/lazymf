@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { onCLS, onFID, onLCP, onFCP, onTTFB } from "web-vitals";
 
 // Function to report metrics
-const reportWebVitals = (onPerfEntry) => {
+const reportWebVitals = (onPerfEntry?: (metric: any) => void) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
     onCLS(onPerfEntry);
     onFID(onPerfEntry);
@@ -47,7 +47,7 @@ const measureJSBundleSize = () => {
 };
 
 // Measure API response times
-const measureAPIResponseTime = (url) => {
+const measureAPIResponseTime = (url: string) => {
   const start = performance.now();
   fetch(url).then(() => {
     const end = performance.now();
@@ -57,7 +57,7 @@ const measureAPIResponseTime = (url) => {
 };
 
 // Measure module load times
-const measureModuleLoadTime = (moduleName) => {
+const measureModuleLoadTime = (moduleName: string) => {
   performance.mark(`${moduleName}-start`);
   import(`./components/${moduleName}`).then(() => {
     performance.mark(`${moduleName}-end`);
@@ -72,7 +72,7 @@ const measureModuleLoadTime = (moduleName) => {
   });
 };
 
-const root = createRoot(document.getElementById("root"));
+const root = createRoot(document.getElementById("root")!);
 root.render(
   <Router>
     <HostApp />

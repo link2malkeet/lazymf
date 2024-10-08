@@ -1,4 +1,9 @@
-import React, { useState, Suspense, useEffect } from "react";
+import React, {
+  useState,
+  Suspense,
+  useEffect,
+  LazyExoticComponent,
+} from "react";
 import { loadModuleFederationImport } from "../../loadModuleFederationImport";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 export const remoteConfig = {
@@ -7,9 +12,11 @@ export const remoteConfig = {
 const loadRemoteComponent = loadModuleFederationImport(remoteConfig);
 
 const HostApp = () => {
-  const [RemoteComponent, setRemoteComponent] = useState(null);
+  const [RemoteComponent, setRemoteComponent] =
+    useState<React.ComponentType<{}> | null>(null);
   const location = useLocation();
-  const [LazyRemoteEntry, setLazyRemoteEntry] = useState(null);
+  const [LazyRemoteEntry, setLazyRemoteEntry] =
+    useState<LazyExoticComponent<any> | null>(null);
   const resetRemoteComponent = () => {
     setRemoteComponent(null);
     setLazyRemoteEntry(null);
@@ -20,7 +27,7 @@ const HostApp = () => {
     setRemoteComponent(() => remoteApp1.default);
   };
 
-  const loadRemoteEntry = async (remoteApp) => {
+  const loadRemoteEntry = async () => {
     try {
       const RemoteComponent2 = loadRemoteComponent(
         "remoteApp2/RemoteComponent2"
