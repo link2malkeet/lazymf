@@ -10,85 +10,95 @@ const reportWebVitals = (onPerfEntry?: (metric: any) => void) => {
     // Cumulative Layout Shift (CLS): Measures visual stability
     // Relevance: Indicates how much unexpected layout shifts occur during page load
     // Target: Lower is better (ideally below 0.1)
-    onCLS(onPerfEntry);
+    onCLS((metric) => {
+      console.log(`CLS: ${metric.value.toFixed(3)} - Rating: ${metric.rating}`);
+      onPerfEntry(metric);
+    });
 
     // Interaction to Next Paint (INP): Measures responsiveness
     // Relevance: Shows how quickly the page responds to user interactions
     // Target: Lower is better (ideally below 200ms)
-    onINP(onPerfEntry);
+    onINP((metric) => {
+      console.log(
+        `INP: ${metric.value.toFixed(0)}ms - Rating: ${metric.rating}`
+      );
+      onPerfEntry(metric);
+    });
 
     // Largest Contentful Paint (LCP): Measures loading performance
     // Relevance: Indicates when the largest content element becomes visible
     // Target: Lower is better (ideally below 2.5 seconds)
-    onLCP(onPerfEntry);
+    onLCP((metric) => {
+      console.log(
+        `LCP: ${(metric.value / 1000).toFixed(2)}s - Rating: ${metric.rating}`
+      );
+      onPerfEntry(metric);
+    });
 
     // First Contentful Paint (FCP): Measures initial render time
     // Relevance: Shows how quickly the first piece of content is displayed
     // Target: Lower is better (ideally below 1.8 seconds)
-    onFCP(onPerfEntry);
+    onFCP((metric) => {
+      console.log(
+        `FCP: ${(metric.value / 1000).toFixed(2)}s - Rating: ${metric.rating}`
+      );
+      onPerfEntry(metric);
+    });
 
     // Time to First Byte (TTFB): Measures server response time
     // Relevance: Indicates how fast the server responds to initial request
     // Target: Lower is better (ideally below 0.8 seconds)
-    onTTFB(onPerfEntry);
+    onTTFB((metric) => {
+      console.log(
+        `TTFB: ${(metric.value / 1000).toFixed(2)}s - Rating: ${metric.rating}`
+      );
+      onPerfEntry(metric);
+    });
   }
 };
 
-// Custom function to measure TTI and TBT
+// measures 2 important web performance metrics: Time to Interactive (TTI) and Total Blocking Time (TBT)
 const measurePerformance = () => {
   const performanceEntries = performance.getEntriesByType("navigation");
   if (performanceEntries.length > 0) {
-    const navigationEntry = performanceEntries[0];
-    console.log("Time to Interactive (TTI):", navigationEntry.domInteractive);
-    console.log(
-      "Total Blocking Time (TBT):",
-      navigationEntry.domContentLoadedEventEnd -
-        navigationEntry.domContentLoadedEventStart
-    );
+    const navigationEntry =
+      performanceEntries[0] as PerformanceNavigationTiming;
+    const ttiInSeconds = (navigationEntry.domInteractive / 1000).toFixed(2);
+    const tbtInSeconds = (
+      (navigationEntry.domContentLoadedEventEnd -
+        navigationEntry.domContentLoadedEventStart) /
+      1000
+    ).toFixed(2);
+
+    console.log("Time to Interactive (TTI):", ttiInSeconds, "seconds");
+    console.log("Total Blocking Time (TBT):", tbtInSeconds, "seconds");
   }
 };
 
-// Measure JS Bundle Size
+// Measure Network resource all scripts Bundle Size
 const measureJSBundleSize = () => {
-  const scripts = document.getElementsByTagName("script");
+  const resources = performance.getEntriesByType("resource");
   let totalSize = 0;
-  for (let i = 0; i < scripts.length; i++) {
-    if (scripts[i].src) {
-      fetch(scripts[i].src)
-        .then((response) => response.text())
-        .then((text) => {
-          totalSize += text.length;
-          const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
-          console.log("JS Bundle Size:", sizeInMB, "MB");
-        });
+  let scriptCount = 0;
+
+  resources.forEach((resource) => {
+    if (resource.initiatorType === "script") {
+      const size = (resource as PerformanceResourceTiming).encodedBodySize;
+      if (size > 0) {
+        totalSize += size;
+        scriptCount++;
+      }
     }
-  }
-};
-
-// Measure API response times
-const measureAPIResponseTime = (url: string) => {
-  const start = performance.now();
-  fetch(url).then(() => {
-    const end = performance.now();
-    const responseTimeInSeconds = ((end - start) / 1000).toFixed(3);
-    console.log(`API Response Time (${url}):`, responseTimeInSeconds, "s");
   });
-};
 
-// Measure module load times
-const measureModuleLoadTime = (moduleName: string) => {
-  performance.mark(`${moduleName}-start`);
-  import(`./components/${moduleName}`).then(() => {
-    performance.mark(`${moduleName}-end`);
-    performance.measure(
-      `${moduleName} Load Time`,
-      `${moduleName}-start`,
-      `${moduleName}-end`
-    );
-    const measures = performance.getEntriesByName(`${moduleName} Load Time`);
-    const loadTimeInSeconds = (measures[0].duration / 1000).toFixed(3);
-    console.log(`${moduleName} Load Time:`, loadTimeInSeconds, "s");
-  });
+  const sizeInKB = (totalSize / 1024).toFixed(2);
+  const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+  console.log(
+    `JS Bundle Size (${scriptCount} scripts):`,
+    sizeInKB,
+    "KB",
+    `(${sizeInMB} MB)`
+  );
 };
 
 const root = createRoot(document.getElementById("root")!);
@@ -100,8 +110,5 @@ root.render(
 
 // Report web vitals
 reportWebVitals(console.log);
-
 measurePerformance();
 measureJSBundleSize();
-measureAPIResponseTime("");
-measureModuleLoadTime("HostApp");
