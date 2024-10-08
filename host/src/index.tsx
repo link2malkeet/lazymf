@@ -2,15 +2,34 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import HostApp from "./components/HostApp";
 import { BrowserRouter as Router } from "react-router-dom";
-import { onCLS, onFID, onLCP, onFCP, onTTFB } from "web-vitals";
+import { onCLS, onINP, onLCP, onFCP, onTTFB } from "web-vitals";
 
 // Function to report metrics
 const reportWebVitals = (onPerfEntry?: (metric: any) => void) => {
   if (onPerfEntry && onPerfEntry instanceof Function) {
+    // Cumulative Layout Shift (CLS): Measures visual stability
+    // Relevance: Indicates how much unexpected layout shifts occur during page load
+    // Target: Lower is better (ideally below 0.1)
     onCLS(onPerfEntry);
-    onFID(onPerfEntry);
+
+    // Interaction to Next Paint (INP): Measures responsiveness
+    // Relevance: Shows how quickly the page responds to user interactions
+    // Target: Lower is better (ideally below 200ms)
+    onINP(onPerfEntry);
+
+    // Largest Contentful Paint (LCP): Measures loading performance
+    // Relevance: Indicates when the largest content element becomes visible
+    // Target: Lower is better (ideally below 2.5 seconds)
     onLCP(onPerfEntry);
+
+    // First Contentful Paint (FCP): Measures initial render time
+    // Relevance: Shows how quickly the first piece of content is displayed
+    // Target: Lower is better (ideally below 1.8 seconds)
     onFCP(onPerfEntry);
+
+    // Time to First Byte (TTFB): Measures server response time
+    // Relevance: Indicates how fast the server responds to initial request
+    // Target: Lower is better (ideally below 0.8 seconds)
     onTTFB(onPerfEntry);
   }
 };
