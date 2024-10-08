@@ -1727,6 +1727,14 @@ compressible@~2.0.16:
   dependencies:
     mime-db ">= 1.43.0 < 2"
 
+compression-webpack-plugin@^11.1.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/compression-webpack-plugin/-/compression-webpack-plugin-11.1.0.tgz#ee340d2029cf99ccecdea9ad1410b377d15b48b3"
+  integrity sha512-zDOQYp10+upzLxW+VRSjEpRRwBXJdsb5lBMlRxx1g8hckIFBpe3DTI0en2w7h+beuq89576RVzfiXrkdPGrHhA==
+  dependencies:
+    schema-utils "^4.2.0"
+    serialize-javascript "^6.0.2"
+
 compression@^1.7.4:
   version "1.7.4"
   resolved "https://registry.yarnpkg.com/compression/-/compression-1.7.4.tgz#95523eff170ca57c29a0ca41e6fe131f41e5bb8f"
@@ -1788,6 +1796,11 @@ core-js-compat@^3.38.0, core-js-compat@^3.38.1:
   integrity sha512-JRH6gfXxGmrzF3tZ57lFx97YARxCXPaMzPo6jELZhv88pBH5VXpQ+y0znKGlFnzuaihqhLbefxSJxWJMPtfDzw==
   dependencies:
     browserslist "^4.23.3"
+
+core-js@3:
+  version "3.38.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.38.1.tgz#aa375b79a286a670388a1a363363d53677c0383e"
+  integrity sha512-OP35aUorbU3Zvlx7pjsFdu1rGNnD4pgw/CWoYzRY3t2EzoVT7shKHY1dlAy3f41cGIO7ZDPQimhGFTlEYkG/Hw==
 
 core-util-is@~1.0.0:
   version "1.0.3"
@@ -3932,7 +3945,7 @@ schema-utils@^3.1.1, schema-utils@^3.2.0:
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
 
-schema-utils@^4.0.0:
+schema-utils@^4.0.0, schema-utils@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-4.2.0.tgz#70d7c93e153a273a805801882ebd3bff20d89c8b"
   integrity sha512-L0jRsrPpjdckP3oPug3/VxNKt2trR8TcabrM6FOAAlvC/9Phcmm+cuAgTlxBqdBR1WJx7Naj9WHw+aOmheSVbw==
@@ -3983,7 +3996,7 @@ send@0.19.0:
     range-parser "~1.2.1"
     statuses "2.0.1"
 
-serialize-javascript@^6.0.1:
+serialize-javascript@^6.0.1, serialize-javascript@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-6.0.2.tgz#defa1e055c83bf6d59ea805d8da862254eb6a6c2"
   integrity sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==
@@ -4547,6 +4560,11 @@ wbuf@^1.1.0, wbuf@^1.7.3:
   integrity sha512-O84QOnr0icsbFGLS0O3bI5FswxzRr8/gHwWkDlQFskhSPryQXvrTMxjxGP4+iWYoauLoBvfDpkrOauZ+0iZpDA==
   dependencies:
     minimalistic-assert "^1.0.0"
+
+web-vitals@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/web-vitals/-/web-vitals-4.2.3.tgz#270c4baecfbc6ec6fc15da1989e465e5f9b94fb7"
+  integrity sha512-/CFAm1mNxSmOj6i0Co+iGFJ58OS4NRGVP+AWS/l509uIK5a1bSoIVaHz/ZumpHTfHSZBpgrJ+wjfpAOrTHok5Q==
 
 webpack-bundle-analyzer@^4.10.2:
   version "4.10.2"

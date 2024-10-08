@@ -1,15 +1,34 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const TerserPlugin = require("terser-webpack-plugin");
+const CompressionPlugin = require("compression-webpack-plugin");
 module.exports = {
   entry: "./src/index.js",
-  mode: "development",
+  mode: "production",
   devtool: "source-map",
   devServer: {
     port: 3000, // Host application port
   },
   output: {
     publicPath: "auto",
+    filename: "[name].[contenthash].js",
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+    splitChunks: {
+      chunks: "all",
+      minSize: 20000,
+      maxSize: 250000,
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "vendors",
+          chunks: "all",
+        },
+      },
+    },
   },
   module: {
     rules: [
@@ -19,7 +38,10 @@ module.exports = {
         use: {
           loader: "babel-loader",
           options: {
-            presets: ["@babel/preset-env", "@babel/preset-react"],
+            presets: [
+              ["@babel/preset-env", { useBuiltIns: "usage", corejs: 3 }],
+              "@babel/preset-react",
+            ],
           },
         },
       },
@@ -40,11 +62,24 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true,
+        removeEmptyAttributes: true,
+        removeStyleLinkTypeAttributes: true,
+        keepClosingSlash: true,
+        minifyJS: true,
+        minifyCSS: true,
+        minifyURLs: true,
+      },
     }),
+    new CompressionPlugin(),
     new BundleAnalyzerPlugin({
-      analyzerMode: "server",
+      analyzerMode: "static",
       reportFilename: "report.html",
-      openAnalyzer: true,
+      openAnalyzer: false,
     }),
   ],
 };
