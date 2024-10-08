@@ -78,27 +78,67 @@ const measurePerformance = () => {
 // Measure Network resource all scripts Bundle Size
 const measureJSBundleSize = () => {
   const resources = performance.getEntriesByType("resource");
-  let totalSize = 0;
+  let totalTransferredSize = 0;
+  let totalDecodedSize = 0;
   let scriptCount = 0;
+  let cachedScriptCount = 0;
 
   resources.forEach((resource) => {
     if (resource.initiatorType === "script") {
-      const size = (resource as PerformanceResourceTiming).encodedBodySize;
-      if (size > 0) {
-        totalSize += size;
-        scriptCount++;
+      const res = resource as PerformanceResourceTiming;
+      totalDecodedSize += res.decodedBodySize;
+      scriptCount++;
+
+      if (res.transferSize === 0 && res.decodedBodySize > 0) {
+        cachedScriptCount++;
+        console.log(`${res.name} was loaded from cache`);
+      } else {
+        totalTransferredSize += res.transferSize;
       }
     }
   });
 
-  const sizeInKB = (totalSize / 1024).toFixed(2);
-  const sizeInMB = (totalSize / (1024 * 1024)).toFixed(2);
+  const transferredSizeInKB = (totalTransferredSize / 1024).toFixed(2);
+  const transferredSizeInMB = (totalTransferredSize / (1024 * 1024)).toFixed(2);
+  const decodedSizeInKB = (totalDecodedSize / 1024).toFixed(2);
+  const decodedSizeInMB = (totalDecodedSize / (1024 * 1024)).toFixed(2);
+
   console.log(
-    `JS Bundle Size (${scriptCount} scripts):`,
-    sizeInKB,
-    "KB",
-    `(${sizeInMB} MB)`
+    `JS Bundle Size (${scriptCount} scripts, ${cachedScriptCount} cached):`,
+    `\nTransferred: ${transferredSizeInKB} KB (${transferredSizeInMB} MB)`,
+    `\nDecoded: ${decodedSizeInKB} KB (${decodedSizeInMB} MB)`
   );
+};
+
+const measureAdditionalMetrics = () => {
+  // Measure Memory Usage
+  if ("memory" in performance) {
+    const memoryInfo = (performance as any).memory;
+    const usedHeapSize = (memoryInfo.usedJSHeapSize / (1024 * 1024)).toFixed(2);
+    const totalHeapSize = (memoryInfo.totalJSHeapSize / (1024 * 1024)).toFixed(
+      2
+    );
+    const heapLimit = (memoryInfo.jsHeapSizeLimit / (1024 * 1024)).toFixed(2);
+
+    console.log(`Memory Usage:
+    - Used Heap: ${usedHeapSize} MB
+    - Total Heap: ${totalHeapSize} MB
+    - Heap Limit: ${heapLimit} MB
+    - Usage: ${(
+      (memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit) *
+      100
+    ).toFixed(2)}% of available memory`);
+  }
+
+  // Measure Resource Timing
+  const resourceEntries = performance.getEntriesByType("resource");
+  resourceEntries.forEach((entry) => {
+    if (entry.initiatorType === "script" || entry.initiatorType === "link") {
+      console.log(
+        `Resource Load Time (${entry.name}): ${entry.duration.toFixed(2)}ms`
+      );
+    }
+  });
 };
 
 const root = createRoot(document.getElementById("root")!);
@@ -112,3 +152,4 @@ root.render(
 reportWebVitals(console.log);
 measurePerformance();
 measureJSBundleSize();
+measureAdditionalMetrics();

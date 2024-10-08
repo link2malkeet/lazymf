@@ -40,12 +40,17 @@ export async function loadModule<T>(
   module: string
 ): Promise<T> {
   console.log("LOADING", scope, module, url);
+  const startTime = performance.now();
   try {
     const container = (await loadScope(url, scope)) as T; // load the script
     await __webpack_init_sharing__("default"); // prepare the default shared scope
     await (container as any).init(__webpack_share_scopes__.default);
     const factory = await (container as any).get(module);
-    return factory();
+    const result = factory();
+    const endTime = performance.now();
+    const loadTime = endTime - startTime;
+    console.log(`Module ${module} loaded in ${loadTime.toFixed(2)}ms`);
+    return result;
   } catch (error) {
     console.error("Error loading module:", error);
     throw error;
